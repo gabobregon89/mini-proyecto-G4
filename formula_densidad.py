@@ -46,4 +46,4 @@ class CalculadoraVolumen:
         for tipo, (min_d, max_d) in rangos:
             if min_d <= densidad <= max_d:
                 return tipo
-            return "Fuera de rango"
+        return "Fuera de rango"

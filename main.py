@@ -8,7 +8,7 @@ def main():
     
     try:
         kilos_plastico = float(input("Ingrese la cantidad de kilos de plástico disponibles: "))
-        tipo_plastico = input("Ingrese el tipo de densidad (LDPE, LLDPE, HDPE, PP, PET, PVC): ").strip().upper()
+        tipo_plastico = input("Ingrese el tipo de plastico (LDPE, LLDPE, HDPE, PP, PET, PVC): ").strip().upper()
 
         if tipo_plastico not in ["LDPE", "LLDPE", "HDPE", "PP", "PET", "PVC"]:
             print("Tipo de plástico inválido. Por favor ingrese alguno de los valores antes mencionados.")
