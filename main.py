@@ -1,4 +1,5 @@
 from formula_produccion import Produccion
+from formula_densidad import CalculadoraVolumen
 
 # Este archivo solo para probar por separado la clase Produccion
 
@@ -7,13 +8,19 @@ def main():
     
     try:
         kilos_plastico = float(input("Ingrese la cantidad de kilos de plástico disponibles: "))
-        tipo_densidad = input("Ingrese el tipo de densidad (BD, MD, AD): ").strip().upper()
+        tipo_plastico = input("Ingrese el tipo de densidad (LDPE, LLDPE, HDPE, PP, PET, PVC): ").strip().upper()
 
-        if tipo_densidad not in ["BD", "MD", "AD"]:
-            print("Tipo de densidad inválido. Por favor ingrese BD, MD o AD.")
+        if tipo_plastico not in ["LDPE", "LLDPE", "HDPE", "PP", "PET", "PVC"]:
+            print("Tipo de plástico inválido. Por favor ingrese alguno de los valores antes mencionados.")
             return
 
-        produccion = Produccion(kilos_plastico, tipo_densidad)
+        densidad = CalculadoraVolumen(tipo_plastico, kilos_plastico)
+        densidad_final = densidad.clasificar_densidad()
+
+        print(f"Densidad final clasificada como: {densidad_final}")        
+
+        # Calcular y mostrar el número de bolsas producidas
+        produccion = Produccion(kilos_plastico, densidad_final)
         numero_bolsas = produccion.calcular_bolsas()
 
         print(f"Número de bolsas producidas: {numero_bolsas}")
