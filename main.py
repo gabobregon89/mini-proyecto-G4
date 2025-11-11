@@ -3,13 +3,11 @@ from tkinter import messagebox, ttk
 import json
 import os
 from PIL import Image, ImageTk
+from formula_densidad import CalculadoraVolumen  # Importamos la clase del otro archivo
+from formula_produccion import Produccion 
 
-# Archivos
-archivo_sesiones = "sesiones.json"
 imagen_fondo = "images/background.jpg"
 
-# Contador de sesiones
-contador_sesiones = 0
 
 # Estilo de botones
 button_style = {
@@ -51,50 +49,55 @@ def crear_boton(frame, texto, comando):
     boton.bind("<Leave>", lambda e: boton.config(bg="#4CAF50"))
     return boton
 
-# Guardado de sesión
-def guardar_sesion(registro):
-    if os.path.exists(archivo_sesiones):
-        with open(archivo_sesiones, "r") as f:
-            datos = json.load(f)
-    else:
-        datos = []
-    datos.append(registro)
-    with open(archivo_sesiones, "w") as f:
-        json.dump(datos, f, indent=4)
+def calcular(entrada_kilos, tipo_de_plastico):
+        try:
+            kilos = float(entrada_kilos.get())
+            plastico = tipo_de_plastico.get()
 
-# Ventana de resultados
-def mostrar_resultado(resultado, ventana_anterior):
-    ventana_resultado, _ = crear_ventana("Resultado")
-    frame = tkinter.Frame(ventana_resultado)
-    frame.grid(row=0, column=0, padx=50, pady=20)
+            v = CalculadoraVolumen(plastico, kilos)
+            densidad = v.calcular_densidad()
+            clasificacion = v.clasificar_densidad()
 
-    # Mostrar resultados
-    for i, (clave, valor) in enumerate(resultado.items()):
-        tkinter.Label(frame, text=f"{clave}: {valor}", bg="#f0f0f0", font=("Helvetica", 10)).grid(row=i, column=0, pady=5)
+            messagebox.showinfo(
+                "Resultado",
+                f"Tipo de plástico: {plastico}\n"
+                f"Cantidad: {kilos} kg\n"
+                f"Densidad calculada: {densidad:.3f} g/cm³\n"
+                f"Clasificación: {clasificacion}"
+            )
 
-    # Botón exportar
-    crear_boton(frame, "Exportar JSON", lambda: exportar_json(resultado)).grid(row=len(resultado), column=0, pady=10)
-    # Botón volver al menú
-    crear_boton(frame, "Volver al Menú", lambda: [ventana_resultado.destroy(), abrir_menu()]).grid(row=len(resultado)+1, column=0, pady=5)
+            entrada_kilos.delete(0, tkinter.END)  # Borra el contenido del entry
+            tipo_de_plastico.current(0)  # Vuelve al valor por defecto (LDPE)
 
-    ventana_resultado.mainloop()
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
 
-def exportar_json(registro):
-    with open("resultado_exportado.json", "w") as f:
-        json.dump(registro, f, indent=4)
-    messagebox.showinfo("Exportar", "Resultado exportado a resultado_exportado.json")
+def calcular_produccion(entrada_kilos, tipo_de_plastico):
+        try:
+            kilos = float(entrada_kilos.get())
+            plastico = tipo_de_plastico.get()
 
-# Funciones de cálculo (simuladas, reemplazar con tus funciones reales)
-def calcular_densidad(kg_a, kg_b):
-    return {"baja": kg_a*0.5, "media": kg_a*0.7, "alta": kg_a*0.9}
+            v = CalculadoraVolumen(plastico, kilos)
+            densidad = v.clasificar_densidad()
+            n = Produccion(kilos, densidad)
+            masa=n.masa_por_bolsa()
+            q_bolsas=n.calcular_bolsas()   
 
-def calcular_cantidad_bolsas(kg_a, kg_b):
-    return kg_a + kg_b
+            messagebox.showinfo(
+                "Resultado",
+                f"Tipo de plástico: {plastico}\n"
+                f"Cantidad: {kilos} kg\n"
+                #f"Densidad calculada: {densidad:.3f} g/cm³\n"
+                f"Masa por Bolsa: {masa:.3f} Kg\n"
+                f"Cantidad de bolsas a producir: {q_bolsas:.2f} Kg\n"
+            )
 
-def calcular_necesidad_producto(cantidad):
-    return {"baja": cantidad*1.1, "media": cantidad*1.2, "alta": cantidad*1.3}
+            entrada_kilos.delete(0, tkinter.END)  # Borra el contenido del entry
+            tipo_de_plastico.current(0)  # Vuelve al valor por defecto (LDPE)
 
-# Abrir menú principal
+        except ValueError:
+                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
+
 def abrir_menu():
     global contador_sesiones
     ventana_menu, _ = crear_ventana("Menú de cálculo")
@@ -102,60 +105,27 @@ def abrir_menu():
     frame.grid(row=0, column=0, padx=50, pady=20)
 
     # Entradas
-    tkinter.Label(frame, text="Producto Kg:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=0, column=1, sticky="e", pady=5)
-    entry_a = tkinter.Entry(frame)
-    entry_a.grid(row=0, column=2, pady=5)
+    tkinter.Label(frame, text="Producto Kg:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=0, column=0, sticky="e", pady=5)
+    entrada_kilos = tkinter.Entry(frame)
+    entrada_kilos.grid(row=0, column=1, pady=5)
 
-    tkinter.Label(frame, text="Tipo de Plástico:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=1, column=1, sticky="e", pady=5)
-    entry_b = tkinter.Entry(frame)
-    entry_b.grid(row=1, column=2, pady=5)
+    # 🔹 Desplegable (Combobox) en lugar de Entry
+    tkinter.Label(frame, text="Tipo de Plástico:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=1, column=0, sticky="e", pady=5)
 
-    tkinter.Label(frame, text="Cantidad de bolsas:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=2, column=1, sticky="e", pady=5)
-    entry_cant = tkinter.Entry(frame)
-    entry_cant.grid(row=2, column=2, pady=5)
+    materiales = ["LDPE", "LLDPE", "HDPE", "PP", "PET", "PVC"]
+    tipo_de_plastico = ttk.Combobox(frame, values=materiales, state="readonly")
+    tipo_de_plastico.current(0)  # Valor por defecto
+    tipo_de_plastico.grid(row=1, column=1, pady=5)
 
+
+  
     
-    
-    
-    
-    # Función para manejar el cálculo y mostrar resultados
-    def ejecutar_calculo(tipo):
-        global contador_sesiones
-        try:
-            kg_a = float(entry_a.get())
-            kg_b = float(entry_b.get())
-            cant = float(entry_cant.get()) if entry_cant.get() else None
-        except ValueError:
-            messagebox.showerror("Error", "Ingrese valores numéricos válidos")
-            return
 
-        contador_sesiones += 1
-        sesion = f"Sesion {contador_sesiones}"
-        resultado = {}
 
-        if tipo == "densidad":
-            dens = calcular_densidad(kg_a, kg_b)
-            resultado = {"sesion": sesion, **dens}
-        elif tipo == "cantidad":
-            cantidad = calcular_cantidad_bolsas(kg_a, kg_b)
-            resultado = {"sesion": sesion, "cantidad_bolsas": cantidad}
-        elif tipo == "necesidad":
-            if not cant:
-                messagebox.showerror("Error", "Ingrese la cantidad de bolsas deseada")
-                return
-            necesidad = calcular_necesidad_producto(cant)
-            resultado = {"sesion": sesion, **necesidad}
-
-        # Guardar
-        guardar_sesion(resultado)
-        ventana_menu.destroy()
-        mostrar_resultado(resultado, ventana_menu)
-
-    # Botones
-    crear_boton(frame, "Densidad", lambda: ejecutar_calculo("densidad")).grid(row=0, column=0, padx=10, pady=5)
-    crear_boton(frame, "Cant. Est. de bolsas", lambda: ejecutar_calculo("cantidad")).grid(row=1, column=0, padx=10, pady=5)
-    crear_boton(frame, "Necesidad de productos", lambda: ejecutar_calculo("necesidad")).grid(row=2, column=0, padx=10, pady=5)
-    crear_boton(frame, "Cerrar Aplicación", lambda: ventana_menu.destroy()).grid(row=3, column=0, padx=10, pady=5)
+ # Botones
+    crear_boton(frame, "Calcular Densidad", lambda: calcular(entrada_kilos, tipo_de_plastico)).grid(row=0, column=2, padx=10, pady=5)
+    crear_boton(frame, "Calcular Producción", lambda: calcular_produccion(entrada_kilos, tipo_de_plastico)).grid(row=1, column=2, padx=10, pady=5)
+    crear_boton(frame, "Cerrar Aplicación", lambda: ventana_menu.destroy()).grid(row=2, column=2, padx=10, pady=5)
 
     ventana_menu.mainloop()
 
