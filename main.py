@@ -109,7 +109,7 @@ def abrir_menu():
     entrada_kilos = tkinter.Entry(frame)
     entrada_kilos.grid(row=0, column=1, pady=5)
 
-    # 🔹 Desplegable (Combobox) en lugar de Entry
+    # Un desplegable  para seleccionar el tipo de plastico
     tkinter.Label(frame, text="Tipo de Plástico:", bg="#f0f0f0", font=("Helvetica", 8)).grid(row=1, column=0, sticky="e", pady=5)
 
     materiales = ["LDPE", "LLDPE", "HDPE", "PP", "PET", "PVC"]
