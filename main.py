@@ -5,6 +5,7 @@ import os
 from PIL import Image, ImageTk
 from formula_densidad import CalculadoraVolumen  # Importamos la clase del otro archivo
 from formula_produccion import Produccion 
+#from generadorpdf2 import GeneradorPDF
 
 imagen_fondo = "images/background.jpg"
 
@@ -89,7 +90,7 @@ def calcular_produccion(entrada_kilos, tipo_de_plastico):
                 f"Cantidad: {kilos} kg\n"
                 #f"Densidad calculada: {densidad:.3f} g/cm³\n"
                 f"Masa por Bolsa: {masa:.3f} Kg\n"
-                f"Cantidad de bolsas a producir: {q_bolsas:.2f} Kg\n"
+                f"Cantidad de bolsas a producir: {q_bolsas:} Unidades\n"
             )
 
             entrada_kilos.delete(0, tkinter.END)  # Borra el contenido del entry
@@ -97,6 +98,32 @@ def calcular_produccion(entrada_kilos, tipo_de_plastico):
 
         except ValueError:
                 messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
+
+#def generarPDF(entrada_kilos, tipo_de_plastico):
+#        try:
+#            kilos = float(entrada_kilos.get())
+#            plastico = tipo_de_plastico.get()
+#
+#            v = CalculadoraVolumen(plastico, kilos)
+#            densidad = v.clasificar_densidad()
+#            n = Produccion(kilos, densidad)
+#            masa=n.masa_por_bolsa()
+#            q_bolsas=n.calcular_bolsas()   
+#
+#            messagebox.showinfo(
+#                "Resultado",
+#                f"Tipo de plástico: {plastico}\n"
+#                f"Cantidad: {kilos} kg\n"
+#                #f"Densidad calculada: {densidad:.3f} g/cm³\n"
+#                f"Masa por Bolsa: {masa:.3f} Kg\n"
+#                f"Cantidad de bolsas a producir: {q_bolsas:} Unidades\n"
+#            )
+#
+#            entrada_kilos.delete(0, tkinter.END)  # Borra el contenido del entry
+#            tipo_de_plastico.current(0)  # Vuelve al valor por defecto (LDPE)
+#        except ValueError:
+#                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
+
 
 def abrir_menu():
     global contador_sesiones
@@ -125,6 +152,7 @@ def abrir_menu():
  # Botones
     crear_boton(frame, "Calcular Densidad", lambda: calcular(entrada_kilos, tipo_de_plastico)).grid(row=0, column=2, padx=10, pady=5)
     crear_boton(frame, "Calcular Producción", lambda: calcular_produccion(entrada_kilos, tipo_de_plastico)).grid(row=1, column=2, padx=10, pady=5)
+    crear_boton(frame, "Generar Reporte", lambda: "generacion de PDF").grid(row=1, column=2, padx=10, pady=5)
     crear_boton(frame, "Cerrar Aplicación", lambda: ventana_menu.destroy()).grid(row=2, column=2, padx=10, pady=5)
 
     ventana_menu.mainloop()
