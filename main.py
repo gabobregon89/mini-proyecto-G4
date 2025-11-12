@@ -121,8 +121,8 @@ def calcular_produccion(entrada_kilos, tipo_de_plastico):
 #
 #            entrada_kilos.delete(0, tkinter.END)  # Borra el contenido del entry
 #            tipo_de_plastico.current(0)  # Vuelve al valor por defecto (LDPE)
-#        except ValueError:
-#                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
+        except ValueError:
+                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para los kilogramos.")
 
 
 def abrir_menu():
