@@ -90,11 +90,3 @@ class GeneradorPDF:
 
         """Método para generar el PDF completo"""
         self.guardar_pdf(self.carpeta_destino)
-
-
-# 🧾 Bloque principal
-if __name__ == "__main__":
-    ruta = "C:\\Users\\Usuario\\Desktop\\Informatorio\\mini-proyecto-G4"
-    pdf = GeneradorPDF(ruta, "LDPE", 100, "BD", 5000)
-    pdf.generarPDF()
-
