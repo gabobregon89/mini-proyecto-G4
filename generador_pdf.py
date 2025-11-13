@@ -1,7 +1,7 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.styles import getSampleStyleSheet
 import datetime
 import os
@@ -25,6 +25,11 @@ class GeneradorPDF:
         estilo.textColor = colors.darkgreen
         self.elementos.append(Paragraph(texto, estilo))
         self.elementos.append(Spacer(1, 12))
+
+        imagen = Image("./fondo_reporte2.jpg", width=150, height=100)
+        imagen.hAlign = 'CENTER'  # Centra la imagen horizontalmente
+        self.elementos.append(imagen)
+        self.elementos.append(Spacer(1, 12))  # Agrega un pequeño espacio debajo
 
     def agregar_parrafo(self, fecha):
         """Agrega un párrafo al PDF"""
@@ -67,12 +72,10 @@ class GeneradorPDF:
         # Une la ruta destino con el nombre del archivo (si self.nombre_archivo es solo el nombre)
         fecha = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M")
         
-        # ruta_pdf = os.path.join(ruta_destino, self.nombre_archivo)
         ruta_pdf = os.path.join(ruta_destino, f"{self.nombre_base}_{fecha}.pdf")
 
         # Crear el documento PDF
         doc = SimpleDocTemplate(ruta_pdf, pagesize=A4)
-        # self.agregar_parrafo(fecha)
         doc.build(self.elementos)
 
         # Obtener ruta absoluta para mostrar en consola
