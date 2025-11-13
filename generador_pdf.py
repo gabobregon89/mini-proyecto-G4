@@ -26,7 +26,7 @@ class GeneradorPDF:
         self.elementos.append(Paragraph(texto, estilo))
         self.elementos.append(Spacer(1, 12))
 
-        imagen = Image("./fondo_reporte2.jpg", width=150, height=100)
+        imagen = Image("./images/fondo_reporte.jpg", width=150, height=100)
         imagen.hAlign = 'CENTER'  # Centra la imagen horizontalmente
         self.elementos.append(imagen)
         self.elementos.append(Spacer(1, 12))  # Agrega un pequeño espacio debajo
