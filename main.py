@@ -93,7 +93,7 @@ def calcular_produccion(entrada_kilos, tipo_de_plastico):
                 "Resultado",
                 f"Tipo de plástico: {plastico}\n"
                 f"Cantidad: {kilos} kg\n"
-                f"Densidad calculada: {densidad:.3f} g/cm³\n"
+                #f"Densidad calculada: {densidad:.3f} g/cm³\n"
                 f"Masa por Bolsa: {masa:.3f} Kg\n"
                 f"Cantidad de bolsas a producir: {q_bolsas:} Unidades\n"
             )
